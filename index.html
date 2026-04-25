@@ -1179,6 +1179,7 @@ function renderResults(totals, totalWageCopper, sNotes, anyActive) {
     ? `За ${days} ${plural(days)}${S.overtime?' (двойная ставка)':''}`
     : '';
   document.getElementById('season-notes').innerHTML = sNotes.map(n=>`<div>${n}</div>`).join('');
+  scheduleSave();
 }
 
 function plural(n) {
@@ -1264,6 +1265,12 @@ function applyState(data) {
   recalcAll();
 }
 
+let _saveTimer;
+function scheduleSave() {
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(autoSave, 300);
+}
+
 function autoSave() {
   try {
     localStorage.setItem(LS_KEY, JSON.stringify(collectState()));
@@ -1316,12 +1323,7 @@ function showStatus(msg) {
   _statusTimer = setTimeout(() => { el.textContent = ''; }, 3000);
 }
 
-// Patch recalcAll to autosave after every change
-const _origRecalcAll = recalcAll;
-function recalcAll() {
-  _origRecalcAll();
-  autoSave();
-}
+
 
 // ═══════════════════════════════════════════
 //  INIT
