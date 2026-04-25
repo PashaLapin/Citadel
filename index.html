@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Цитадель — Запретные Земли</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0f0d09;
+    --surface:   #1a1610;
+    --border:    #3d3020;
+    --border-hi: #7a5c28;
+    --gold:      #c9963a;
+    --gold-hi:   #f0c060;
+    --rust:      #8b3a2a;
+    --rust-hi:   #c4533c;
+    --parchment: #d4b97a;
+    --text:      #c8b89a;
+    --text-dim:  #7a6a52;
+    --wood:      #6b4c2a;
+    --stone:     #7a7268;
+    --iron:      #5a6070;
+    --meat:      #8b3a3a;
+    --food:      #7a6a2a;
+    --coin-c:    #b87333;
+    --coin-s:    #aaaaaa;
+    --green:     #4a7a4a;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IM Fell English', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* Texture overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(201,150,58,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(139,58,42,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .wrap {
+    position: relative; z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border-hi);
+    position: relative;
+  }
+  header::after {
+    content: '❧';
+    display: block;
+    color: var(--gold);
+    font-size: 20px;
+    margin-top: 8px;
+    opacity: 0.6;
+  }
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 5vw, 38px);
+    font-weight: 900;
+    color: var(--gold-hi);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    text-shadow: 0 0 40px rgba(201,150,58,0.3);
+  }
+  .subtitle {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: var(--text-dim);
+    margin-top: 8px;
+    font-size: 15px;
+  }
+
+  /* Section headers */
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 36px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--border-hi), transparent);
+  }
+
+  /* Global controls */
+  .global-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-end;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 8px;
+  }
+  .ctrl-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 140px;
+  }
+  label {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    font-family: 'Cinzel', serif;
+    text-transform: uppercase;
+  }
+  input[type="number"] {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--gold-hi);
+    font-family: 'IM Fell English', serif;
+    font-size: 18px;
+    padding: 8px 12px;
+    border-radius: 3px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type="number"]:focus { border-color: var(--gold); }
+
+  /* Toggle */
+  .toggle-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    padding: 9px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-dim);
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .toggle-btn.active {
+    border-color: var(--rust-hi);
+    color: var(--rust-hi);
+    background: rgba(139,58,42,0.12);
+  }
+  .toggle-btn .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle-btn.active .dot { background: var(--rust-hi); }
+
+  /* Season selector */
+  .season-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .season-btn {
+    padding: 7px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-dim);
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .season-btn.active {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,150,58,0.1);
+  }
+
+  /* Servants grid */
+  .servants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+
+  .servant-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: border-color 0.2s;
+    position: relative;
+  }
+  .servant-card.has-servants { border-color: var(--border-hi); }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+  }
+  .card-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--parchment);
+    letter-spacing: 0.05em;
+  }
+  .card-wage {
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
+    white-space: nowrap;
+  }
+
+  .card-qty {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .qty-btn {
+    width: 28px; height: 28px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    font-size: 18px;
+    line-height: 1;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .qty-btn:hover { border-color: var(--gold); background: rgba(201,150,58,0.1); }
+  .qty-num {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    color: var(--gold-hi);
+    min-width: 32px;
+    text-align: center;
+  }
+  .qty-cap {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  .card-output {
+    font-size: 13px;
+    color: var(--text-dim);
+    font-style: italic;
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+  }
+  .card-output span {
+    color: var(--text);
+  }
+
+  /* Special: peasant with submode */
+  .peasant-modes {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .pmode-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .pmode-btn.active {
+    border-color: var(--green);
+    color: #7fc47f;
+    background: rgba(74,122,74,0.12);
+  }
+
+  /* Results panel */
+  .results {
+    background: var(--surface);
+    border: 1px solid var(--border-hi);
+    border-radius: 4px;
+    padding: 24px;
+    margin-top: 4px;
+  }
+  .results-title {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gold-hi);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .res-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .res-item {
+    text-align: center;
+    padding: 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+  .res-item.nonzero { border-color: var(--border-hi); }
+  .res-val {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .res-label {
+    font-size: 11px;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .c-wood  { color: #a07840; }
+  .c-stone { color: #9a9080; }
+  .c-iron  { color: #7888a0; }
+  .c-ore   { color: #5a8870; }
+  .c-meat  { color: #c05050; }
+  .c-hides { color: #a08050; }
+  .c-grain { color: #c8a840; }
+  .c-veg   { color: #70a870; }
+  .c-wool  { color: #c0b0a0; }
+  .c-flour { color: #e0d0b0; }
+  .c-food  { color: #c8b040; }
+  .c-leather{ color: #a06830; }
+  .c-cloth { color: #8090c0; }
+
+  .wage-block {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .wage-total {
+    font-size: 15px;
+  }
+  .wage-total strong {
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+  }
+  .coin-copper { color: var(--coin-c); }
+  .coin-silver { color: var(--coin-s); }
+
+  .note {
+    font-size: 12px;
+    font-style: italic;
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+
+  /* Peasant special notes */
+  .peasant-note {
+    font-size: 12px;
+    font-style: italic;
+    color: #7fc47f;
+    margin-top: 4px;
+  }
+
+  hr.fancy {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 4px 0;
+  }
+
+  @media (max-width: 500px) {
+    .global-bar { flex-direction: column; }
+    .res-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Калькулятор цитадели</h1>
+  <p class="subtitle">Запретные Земли &mdash; производство ресурсов слугами</p>
+</header>
+
+<!-- Global settings -->
+<div class="section-title">Настройки периода</div>
+<div class="global-bar">
+  <div class="ctrl-group">
+    <label>Дней</label>
+    <input type="number" id="days" min="1" max="365" value="7">
+  </div>
+  <div class="ctrl-group">
+    <label>Режим работы</label>
+    <div class="toggle-wrap">
+      <div class="toggle-btn" id="overtime-btn" onclick="toggleOvertime()">
+        <div class="dot"></div>
+        <span>Переработка (×1.5 ресурсов, ×2 жалованье)</span>
+      </div>
+    </div>
+  </div>
+  <div class="ctrl-group">
+    <label>Сезон</label>
+    <div class="season-group">
+      <div class="season-btn active" onclick="setSeason('spring')" data-s="spring">Весна</div>
+      <div class="season-btn" onclick="setSeason('summer')" data-s="summer">Лето</div>
+      <div class="season-btn" onclick="setSeason('autumn')" data-s="autumn">Осень</div>
+      <div class="season-btn" onclick="setSeason('winter')" data-s="winter">Зима</div>
+    </div>
+  </div>
+</div>
+
+<!-- Extractors -->
+<div class="section-title">Добытчики</div>
+<div class="servants-grid" id="extractors-grid"></div>
+
+<!-- Processors -->
+<div class="section-title">Переработчики</div>
+<div class="servants-grid" id="processors-grid"></div>
+
+<!-- Support / special -->
+<div class="section-title">Прочие слуги</div>
+<div class="servants-grid" id="support-grid"></div>
+
+<!-- Results -->
+<div class="section-title">Итог за период</div>
+<div class="results">
+  <div class="results-title" id="results-title">Итог за 7 дней</div>
+  <div class="res-grid" id="res-grid"></div>
+  <div class="wage-block">
+    <div>
+      <div class="wage-total">Жалованье: <strong id="wage-display">—</strong></div>
+      <div class="note" id="wage-note"></div>
+    </div>
+    <div class="note" id="season-note"></div>
+  </div>
+</div>
+
+</div>
+
+<script>
+// =====================
+// DATA
+// =====================
+
+// quarterPerDay: 2 normal, 3 overtime
+// productionPerQuarter: per servant
+// wage: in copper per day (1 silver = 10 copper)
+// maxPerBuilding: дюжина = 12 (for mine/quarry)
+
+const SERVANTS = {
+  extractors: [
+    {
+      id: 'woodcutter',
+      name: 'Дровосек',
+      wageCopperPerDay: 4,
+      desc: '2 меры дерева за четверть суток',
+      outputs: [{ res: 'wood', perQuarter: 2 }],
+      note: 'Работает в лесу',
+    },
+    {
+      id: 'miner',
+      name: 'Шахтёр',
+      wageCopperPerDay: 4,
+      desc: '2 меры железной руды за четверть суток',
+      outputs: [{ res: 'ore', perQuarter: 2 }],
+      note: 'Шахта, до 12 шахтёров одновременно',
+      maxPerBuilding: 12,
+    },
+    {
+      id: 'quarryman',
+      name: 'Дробильщик',
+      wageCopperPerDay: 3,
+      desc: '2 меры камня за четверть суток',
+      outputs: [{ res: 'stone', perQuarter: 2 }],
+      note: 'Каменоломня, до 12 дробильщиков одновременно',
+      maxPerBuilding: 12,
+    },
+    {
+      id: 'hunter',
+      name: 'Охотник',
+      wageCopperPerDay: 6,
+      desc: '1 мера мяса + 1 мера шкур за четверть суток',
+      outputs: [
+        { res: 'meat', perQuarter: 1 },
+        { res: 'hides', perQuarter: 1 },
+      ],
+      note: 'Дикая местность. Раз в неделю риск нападения зверя.',
+    },
+  ],
+
+  processors: [
+    {
+      id: 'blacksmith',
+      name: 'Кузнец',
+      wageCopperPerDay: 10, // 1 silver
+      desc: 'До 12 мер руды → 12 мер железа за четверть суток',
+      outputs: [{ res: 'iron', perQuarter: 12, inputRes: 'ore', inputAmt: 12 }],
+      note: 'Требует кузницу + железную руду',
+      maxPerQuarter: 12,
+    },
+    {
+      id: 'miller',
+      name: 'Мельник',
+      wageCopperPerDay: 8,
+      desc: 'До 12 мер зерна → 12 мер муки за четверть суток',
+      outputs: [{ res: 'flour', perQuarter: 12, inputRes: 'grain', inputAmt: 12 }],
+      note: 'Требует мельницу + зерно',
+      maxPerQuarter: 12,
+    },
+    {
+      id: 'baker',
+      name: 'Пекарь',
+      wageCopperPerDay: 6,
+      desc: 'До 12 мер муки → 12 мер еды за четверть суток',
+      outputs: [{ res: 'food', perQuarter: 12, inputRes: 'flour', inputAmt: 12 }],
+      note: 'Требует пекарню + муку',
+      maxPerQuarter: 12,
+    },
+    {
+      id: 'innkeeper',
+      name: 'Трактирщик',
+      wageCopperPerDay: 12,
+      desc: 'До 12 мер мяса/овощей → 12 мер еды за четверть суток',
+      outputs: [{ res: 'food', perQuarter: 12, inputRes: 'meat/овощи', inputAmt: 12 }],
+      note: 'Требует трактир + мясо или овощи',
+      maxPerQuarter: 12,
+    },
+    {
+      id: 'tanner',
+      name: 'Кожевник',
+      wageCopperPerDay: 6,
+      desc: 'До 12 мер шкур → 12 мер кожи за четверть суток',
+      outputs: [{ res: 'leather', perQuarter: 12, inputRes: 'hides', inputAmt: 12 }],
+      note: 'Требует сыромятню + шкуры',
+      maxPerQuarter: 12,
+    },
+    {
+      id: 'tailor',
+      name: 'Портной',
+      wageCopperPerDay: 8,
+      desc: 'До 12 мер шерсти → 12 мер ткани за четверть суток',
+      outputs: [{ res: 'cloth', perQuarter: 12, inputRes: 'wool', inputAmt: 12 }],
+      note: 'Требует швейную мастерскую + шерсть',
+      maxPerQuarter: 12,
+    },
+  ],
+
+  support: [
+    {
+      id: 'peasant',
+      name: 'Крестьянин',
+      wageCopperPerDay: 5,
+      desc: 'Поле / огород / овчарня / пастбище',
+      note: 'Сезонная работа. Режим переработки не применим.',
+      special: 'peasant',
+    },
+    {
+      id: 'laborer',
+      name: 'Разнорабочий',
+      wageCopperPerDay: 3,
+      desc: 'Обслуживание цитадели (не производит ресурсов)',
+      outputs: [],
+      note: 'Не требует проверок ремесла',
+    },
+    {
+      id: 'guard',
+      name: 'Стражник',
+      wageCopperPerDay: 10,
+      desc: 'Охрана. +1 к классу защиты за каждые 10 чел.',
+      outputs: [],
+      note: 'Вооружённый охранник',
+    },
+    {
+      id: 'architect',
+      name: 'Архитектор',
+      wageCopperPerDay: 20,
+      desc: 'Возводит постройки без проверок',
+      outputs: [],
+      note: 'Редкий специалист',
+    },
+  ],
+};
+
+const RES_META = {
+  wood:    { label: 'Дерево',    cls: 'c-wood',   icon: '🪵' },
+  stone:   { label: 'Камень',    cls: 'c-stone',  icon: '🪨' },
+  ore:     { label: 'Жел. руда', cls: 'c-ore',    icon: '⛏' },
+  iron:    { label: 'Железо',    cls: 'c-iron',   icon: '⚙' },
+  meat:    { label: 'Мясо',      cls: 'c-meat',   icon: '🥩' },
+  hides:   { label: 'Шкуры',    cls: 'c-hides',  icon: '🦌' },
+  grain:   { label: 'Зерно',     cls: 'c-grain',  icon: '🌾' },
+  veg:     { label: 'Овощи',     cls: 'c-veg',    icon: '🥕' },
+  wool:    { label: 'Шерсть',    cls: 'c-wool',   icon: '🐑' },
+  flour:   { label: 'Мука',      cls: 'c-flour',  icon: '🌾' },
+  food:    { label: 'Еда',       cls: 'c-food',   icon: '🍞' },
+  leather: { label: 'Кожа',      cls: 'c-leather',icon: '🧤' },
+  cloth:   { label: 'Ткань',     cls: 'c-cloth',  icon: '🧵' },
+};
+
+// STATE
+const state = {
+  days: 7,
+  overtime: false,
+  season: 'spring',
+  counts: {},
+  peasantMode: 'field', // field | garden | sheep | cattle
+};
+
+// Peasant modes
+const PEASANT_MODES = [
+  { id: 'field',  label: 'Поле',     note: 'Осенью: 300 мер зерна за неделю сбора. Вне сезона — не работает.' },
+  { id: 'garden', label: 'Огород',   note: 'Весна/Лето: 10 мер овощей раз в неделю.' },
+  { id: 'sheep',  label: 'Овчарня',  note: '2 раза в год: 2 меры шерсти/овцу. Мясо: 5 мер/овца в любое время.' },
+  { id: 'cattle', label: 'Пастбище', note: 'Ежедневно: 1 мера еды/корову (молоко). Мясо: 8 мер/корову.' },
+];
+
+// =====================
+// INIT
+// =====================
+function init() {
+  buildGrid('extractors-grid', SERVANTS.extractors);
+  buildGrid('processors-grid', SERVANTS.processors);
+  buildGrid('support-grid', SERVANTS.support);
+  document.getElementById('days').addEventListener('input', e => {
+    state.days = Math.max(1, parseInt(e.target.value) || 1);
+    recalc();
+  });
+  recalc();
+}
+
+function buildGrid(gridId, list) {
+  const grid = document.getElementById(gridId);
+  list.forEach(s => {
+    state.counts[s.id] = 0;
+    const card = document.createElement('div');
+    card.className = 'servant-card';
+    card.id = 'card-' + s.id;
+
+    let extra = '';
+    if (s.special === 'peasant') {
+      extra = `<div class="peasant-modes" id="pmodes">` +
+        PEASANT_MODES.map(m =>
+          `<div class="pmode-btn ${m.id === state.peasantMode ? 'active' : ''}"
+               onclick="setPeasantMode('${m.id}')">${m.label}</div>`
+        ).join('') +
+        `</div><div class="peasant-note" id="peasant-note">${PEASANT_MODES[0].note}</div>`;
+    }
+
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-name">${s.name}</div>
+        <div class="card-wage" id="wage-${s.id}">${wageStr(s)}</div>
+      </div>
+      <div class="card-qty">
+        <div class="qty-btn" onclick="change('${s.id}', -1)">−</div>
+        <div class="qty-num" id="qty-${s.id}">0</div>
+        <div class="qty-btn" onclick="change('${s.id}', 1)">+</div>
+        <div class="qty-cap">${s.maxPerBuilding ? `макс. ${s.maxPerBuilding}` : ''}</div>
+      </div>
+      ${extra}
+      <div class="card-output" id="out-${s.id}">${s.desc}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function wageStr(s) {
+  const c = s.wageCopperPerDay;
+  if (c >= 10) return `${c / 10} сер./день`;
+  return `${c} мед./день`;
+}
+
+// =====================
+// UI HANDLERS
+// =====================
+function change(id, delta) {
+  const s = findServant(id);
+  const max = s.maxPerBuilding || 999;
+  state.counts[id] = Math.max(0, Math.min(max, (state.counts[id] || 0) + delta));
+  document.getElementById('qty-' + id).textContent = state.counts[id];
+  const card = document.getElementById('card-' + id);
+  card.classList.toggle('has-servants', state.counts[id] > 0);
+  recalc();
+}
+
+function toggleOvertime() {
+  state.overtime = !state.overtime;
+  const btn = document.getElementById('overtime-btn');
+  btn.classList.toggle('active', state.overtime);
+  recalc();
+}
+
+function setSeason(s) {
+  state.season = s;
+  document.querySelectorAll('.season-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.s === s);
+  });
+  recalc();
+}
+
+function setPeasantMode(mode) {
+  state.peasantMode = mode;
+  document.querySelectorAll('.pmode-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === PEASANT_MODES.find(m => m.id === mode).label);
+  });
+  const note = PEASANT_MODES.find(m => m.id === mode).note;
+  const el = document.getElementById('peasant-note');
+  if (el) el.textContent = note;
+  recalc();
+}
+
+function findServant(id) {
+  return [
+    ...SERVANTS.extractors,
+    ...SERVANTS.processors,
+    ...SERVANTS.support,
+  ].find(s => s.id === id);
+}
+
+// =====================
+// CALCULATION
+// =====================
+function recalc() {
+  const days = state.days;
+  const quartersPerDay = state.overtime ? 3 : 2;
+  const totalQuarters = days * quartersPerDay;
+  const wageMultiplier = state.overtime ? 2 : 1;
+
+  const totals = {};
+  let totalWageCopperPerDay = 0;
+  const seasonNotes = [];
+
+  // All servants
+  const all = [...SERVANTS.extractors, ...SERVANTS.processors, ...SERVANTS.support];
+
+  all.forEach(s => {
+    const count = state.counts[s.id] || 0;
+    if (!count) return;
+
+    const wage = s.wageCopperPerDay * count * wageMultiplier;
+    totalWageCopperPerDay += wage;
+
+    if (s.special === 'peasant') {
+      // Special peasant logic
+      calcPeasant(totals, count, days, seasonNotes);
+      return;
+    }
+
+    if (!s.outputs || !s.outputs.length) return;
+
+    s.outputs.forEach(out => {
+      const amount = out.perQuarter * count * totalQuarters;
+      if (out.inputRes) {
+        // Processor: limited by batches (12 per quarter per servant)
+        const capped = Math.min(out.perQuarter, out.maxPerQuarter || out.perQuarter);
+        const produced = capped * count * totalQuarters;
+        totals[out.res] = (totals[out.res] || 0) + produced;
+        // Update card output
+        const outEl = document.getElementById('out-' + s.id);
+        if (outEl) {
+          outEl.innerHTML = `
+            <span>${formatRes(out.res, produced)}</span>
+            <span class="note">(нужно: ${formatInputNote(out.inputRes, out.inputAmt * count * totalQuarters)})</span>`;
+        }
+      } else {
+        totals[out.res] = (totals[out.res] || 0) + amount;
+        const outEl = document.getElementById('out-' + s.id);
+        if (outEl && count > 0) {
+          outEl.innerHTML = `За период: <span>${formatRes(out.res, amount)}${s.outputs.length > 1 ? '' : ''}</span>`;
+          if (s.outputs.length > 1) {
+            // hunter
+            let txt = 'За период: ';
+            s.outputs.forEach(o => {
+              const a = o.perQuarter * count * totalQuarters;
+              txt += `<span>${a} ${RES_META[o.res].icon} ${RES_META[o.res].label}</span> `;
+            });
+            outEl.innerHTML = txt;
+          }
+        }
+      }
+    });
+  });
+
+  renderResults(totals, totalWageCopperPerDay * days, seasonNotes, days);
+}
+
+function calcPeasant(totals, count, days, seasonNotes) {
+  const mode = state.peasantMode;
+  const season = state.season;
+  const weeks = days / 7;
+
+  if (mode === 'field') {
+    if (season === 'autumn') {
+      // 300 per field per season (one week of work)
+      // If days >= 7, they can harvest. Proportional to weeks of work possible.
+      // Rules: one harvest per autumn, takes one week.
+      const harvests = Math.min(count, Math.floor(days / 7));
+      const amount = harvests * 300;
+      totals['grain'] = (totals['grain'] || 0) + amount;
+      if (amount > 0) seasonNotes.push(`Поле (${count} крест.): ${amount} мер зерна (осенний сбор)`);
+    } else {
+      seasonNotes.push(`Поле: сбор урожая только осенью`);
+    }
+  } else if (mode === 'garden') {
+    if (season === 'spring' || season === 'summer') {
+      const harvests = Math.floor(days / 7);
+      const amount = harvests * 10 * count;
+      totals['veg'] = (totals['veg'] || 0) + amount;
+      if (amount > 0) seasonNotes.push(`Огород (${count} крест.): ${amount} мер овощей`);
+      else seasonNotes.push(`Огород: нужна хотя бы неделя для сбора`);
+    } else {
+      seasonNotes.push(`Огород: сбор только весной и летом`);
+    }
+  } else if (mode === 'sheep') {
+    // 2x per year: if period covers enough time... simplified:
+    // 1 shearing per 6 months. Approximate per days.
+    const shearings = Math.floor(days / 182);
+    // Each peasant tends 1 flock (up to 12 sheep assumed)
+    // Rules say: 2 мер шерсти с каждого животного. We can't know # of sheep without more input.
+    // Simplify: each peasant produces 2 shearings × 12 sheep potential.
+    // We'll note this as "2 шерсти × 12 овец" and flag it.
+    seasonNotes.push(`Овчарня: стрижка 2 раза в год. Каждый раз: 2 меры шерсти с овцы. Укажи поголовье вручную.`);
+  } else if (mode === 'cattle') {
+    // 1 мера еды (молоко) / корову / сутки, четверть суток работы
+    // Each peasant can tend up to 12 cows
+    // Simplified: 1 ед. еды / крестьянин / день (1 корова на крестьянина)
+    const amount = count * days;
+    totals['food'] = (totals['food'] || 0) + amount;
+    seasonNotes.push(`Пастбище (${count} крест.): ${amount} мер еды — молоко (по 1 корове на крест.)`);
+  }
+
+  const outEl = document.getElementById('out-peasant');
+  if (outEl) {
+    const m = PEASANT_MODES.find(m => m.id === mode);
+    outEl.innerHTML = `<span>${m.label}</span>: ${m.note}`;
+  }
+}
+
+function formatRes(res, amount) {
+  const m = RES_META[res] || { label: res, icon: '?' };
+  return `${Math.round(amount)} ${m.icon} ${m.label}`;
+}
+
+function formatInputNote(res, amount) {
+  return `${Math.round(amount)} ${res}`;
+}
+
+function renderResults(totals, totalWageCopper, seasonNotes, days) {
+  document.getElementById('results-title').textContent = `Итог за ${days} ${pluralDays(days)}`;
+
+  const grid = document.getElementById('res-grid');
+  grid.innerHTML = '';
+
+  // Show all resource types, even if zero (but only if any servant is active)
+  const anyActive = Object.values(state.counts).some(v => v > 0);
+  const resKeys = Object.keys(RES_META);
+
+  if (!anyActive) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);font-style:italic;padding:20px">Добавьте слуг, чтобы увидеть производство</div>`;
+  } else {
+    resKeys.forEach(key => {
+      const val = Math.round(totals[key] || 0);
+      const m = RES_META[key];
+      const item = document.createElement('div');
+      item.className = 'res-item' + (val > 0 ? ' nonzero' : '');
+      item.innerHTML = `
+        <div class="res-val ${m.cls}">${val}</div>
+        <div class="res-label">${m.icon} ${m.label}</div>`;
+      grid.appendChild(item);
+    });
+  }
+
+  // Wages
+  const silver = Math.floor(totalWageCopper / 10);
+  const copper = totalWageCopper % 10;
+  let wageHtml = '';
+  if (silver > 0) wageHtml += `<span class="coin-silver">${silver} серебряных</span> `;
+  if (copper > 0 || silver === 0) wageHtml += `<span class="coin-copper">${copper} медных</span>`;
+  document.getElementById('wage-display').innerHTML = wageHtml || '0';
+
+  const mult = state.overtime ? ' (двойная ставка)' : '';
+  document.getElementById('wage-note').textContent =
+    totalWageCopper > 0 ? `За ${days} ${pluralDays(days)}${mult}` : '';
+
+  // Season notes
+  const snEl = document.getElementById('season-note');
+  snEl.innerHTML = seasonNotes.map(n => `<div>${n}</div>`).join('');
+}
+
+function pluralDays(n) {
+  if (n % 10 === 1 && n % 100 !== 11) return 'день';
+  if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'дня';
+  return 'дней';
+}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
