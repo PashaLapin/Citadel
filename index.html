@@ -6,946 +6,1337 @@
 <title>Цитадель — Запретные Земли</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg:        #0f0d09;
-    --surface:   #1a1610;
-    --border:    #3d3020;
-    --border-hi: #7a5c28;
-    --gold:      #c9963a;
-    --gold-hi:   #f0c060;
-    --rust:      #8b3a2a;
-    --rust-hi:   #c4533c;
-    --parchment: #d4b97a;
-    --text:      #c8b89a;
-    --text-dim:  #7a6a52;
-    --wood:      #6b4c2a;
-    --stone:     #7a7268;
-    --iron:      #5a6070;
-    --meat:      #8b3a3a;
-    --food:      #7a6a2a;
-    --coin-c:    #b87333;
-    --coin-s:    #aaaaaa;
-    --green:     #4a7a4a;
-  }
+:root {
+  --bg:        #0e0c08;
+  --surface:   #17140e;
+  --surface2:  #1f1a11;
+  --border:    #352a18;
+  --border-hi: #6a4e20;
+  --gold:      #c9963a;
+  --gold-hi:   #edb84a;
+  --gold-dim:  #7a5820;
+  --rust:      #8b3a2a;
+  --rust-hi:   #c4533c;
+  --parchment: #d4b97a;
+  --text:      #c0aa88;
+  --text-dim:  #6a5a40;
+  --green:     #4a7a4a;
+  --green-hi:  #6ab06a;
+  --coin-c:    #b87333;
+  --coin-s:    #b0b0b0;
+  --tab-h:     56px;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'IM Fell English', Georgia, serif;
-    font-size: 16px;
-    line-height: 1.6;
-    min-height: 100vh;
-  }
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 15px;
+  line-height: 1.55;
+  min-height: 100vh;
+}
 
-  /* Texture overlay */
-  body::before {
-    content: '';
-    position: fixed; inset: 0; z-index: 0;
-    background-image:
-      radial-gradient(ellipse at 20% 20%, rgba(201,150,58,0.04) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 80%, rgba(139,58,42,0.06) 0%, transparent 60%);
-    pointer-events: none;
-  }
+/* ─── HEADER ─── */
+.app-header {
+  background: linear-gradient(180deg, #1a1408 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border-hi);
+  padding: 20px 24px 0;
+  position: sticky; top: 0; z-index: 100;
+}
+.header-top {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  max-width: 940px;
+  margin: 0 auto 16px;
+}
+.citadel-name-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-hi);
+  color: var(--gold-hi);
+  font-family: 'Cinzel', serif;
+  font-size: clamp(18px, 4vw, 30px);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  outline: none;
+  width: 100%;
+  padding: 4px 0;
+  transition: border-color 0.2s;
+}
+.citadel-name-input::placeholder { color: var(--gold-dim); opacity: 0.7; }
+.citadel-name-input:focus { border-color: var(--gold); }
 
-  .wrap {
-    position: relative; z-index: 1;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 40px 24px 80px;
-  }
+.header-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  white-space: nowrap;
+  padding-bottom: 8px;
+}
 
-  /* Header */
-  header {
-    text-align: center;
-    margin-bottom: 48px;
-    padding-bottom: 32px;
-    border-bottom: 1px solid var(--border-hi);
-    position: relative;
-  }
-  header::after {
-    content: '❧';
-    display: block;
-    color: var(--gold);
-    font-size: 20px;
-    margin-top: 8px;
-    opacity: 0.6;
-  }
-  h1 {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(22px, 5vw, 38px);
-    font-weight: 900;
-    color: var(--gold-hi);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    line-height: 1.1;
-    text-shadow: 0 0 40px rgba(201,150,58,0.3);
-  }
-  .subtitle {
-    font-family: 'IM Fell English', serif;
-    font-style: italic;
-    color: var(--text-dim);
-    margin-top: 8px;
-    font-size: 15px;
-  }
+/* ─── TABS ─── */
+.tabs {
+  display: flex;
+  gap: 0;
+  max-width: 940px;
+  margin: 0 auto;
+}
+.tab-btn {
+  padding: 10px 22px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  user-select: none;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
 
-  /* Section headers */
-  .section-title {
-    font-family: 'Cinzel', serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gold);
-    margin: 36px 0 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .section-title::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(to right, var(--border-hi), transparent);
-  }
+/* ─── LAYOUT ─── */
+.main {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 28px 24px 80px;
+}
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
 
-  /* Global controls */
-  .global-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    align-items: flex-end;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 20px;
-    margin-bottom: 8px;
-  }
-  .ctrl-group {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    flex: 1;
-    min-width: 140px;
-  }
-  label {
-    font-size: 12px;
-    letter-spacing: 0.08em;
-    color: var(--text-dim);
-    font-family: 'Cinzel', serif;
-    text-transform: uppercase;
-  }
-  input[type="number"] {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--gold-hi);
-    font-family: 'IM Fell English', serif;
-    font-size: 18px;
-    padding: 8px 12px;
-    border-radius: 3px;
-    width: 100%;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  input[type="number"]:focus { border-color: var(--gold); }
+/* ─── SECTION TITLE ─── */
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 32px 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-title:first-child { margin-top: 0; }
+.section-title::after {
+  content: '';
+  flex: 1; height: 1px;
+  background: linear-gradient(to right, var(--border-hi), transparent);
+}
 
-  /* Toggle */
-  .toggle-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .toggle-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    user-select: none;
-    padding: 9px 14px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--text-dim);
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    transition: all 0.2s;
-  }
-  .toggle-btn.active {
-    border-color: var(--rust-hi);
-    color: var(--rust-hi);
-    background: rgba(139,58,42,0.12);
-  }
-  .toggle-btn .dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: var(--border);
-    transition: background 0.2s;
-    flex-shrink: 0;
-  }
-  .toggle-btn.active .dot { background: var(--rust-hi); }
+/* ─── PASSPORT TAB ─── */
+.passport-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 540px) { .passport-grid { grid-template-columns: 1fr; } }
 
-  /* Season selector */
-  .season-group {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .season-btn {
-    padding: 7px 14px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--text-dim);
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .season-btn.active {
-    border-color: var(--gold);
-    color: var(--gold);
-    background: rgba(201,150,58,0.1);
-  }
+.pp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.pp-field.full { grid-column: 1 / -1; }
+.pp-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.pp-input, .pp-textarea, .pp-select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'IM Fell English', serif;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 3px;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.pp-input:focus, .pp-textarea:focus, .pp-select:focus { border-color: var(--gold); }
+.pp-textarea { resize: vertical; min-height: 72px; }
+.pp-select { cursor: pointer; }
+.pp-select option { background: #1a1408; }
 
-  /* Servants grid */
-  .servants-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 12px;
-  }
+/* Heroes */
+.heroes-list { display: flex; flex-direction: column; gap: 8px; }
+.hero-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.hero-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'IM Fell English', serif;
+  font-size: 14px;
+  padding: 7px 10px;
+  border-radius: 3px;
+  outline: none;
+  flex: 1;
+  transition: border-color 0.2s;
+}
+.hero-input:focus { border-color: var(--gold); }
+.hero-del {
+  width: 28px; height: 28px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.hero-del:hover { border-color: var(--rust-hi); color: var(--rust-hi); }
+.btn-add-hero {
+  margin-top: 8px;
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px dashed var(--border-hi);
+  color: var(--gold-dim);
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+.btn-add-hero:hover { border-color: var(--gold); color: var(--gold); }
 
-  .servant-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    transition: border-color 0.2s;
-    position: relative;
-  }
-  .servant-card.has-servants { border-color: var(--border-hi); }
+/* Defense summary */
+.defense-panel {
+  background: var(--surface2);
+  border: 1px solid var(--border-hi);
+  border-radius: 4px;
+  padding: 16px 20px;
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.def-val {
+  font-family: 'Cinzel', serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--gold-hi);
+  line-height: 1;
+}
+.def-label {
+  font-size: 11px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.def-breakdown {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text-dim);
+  font-style: italic;
+  line-height: 1.8;
+}
+.def-breakdown span { color: var(--text); }
 
-  .card-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    justify-content: space-between;
-  }
-  .card-name {
-    font-family: 'Cinzel', serif;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--parchment);
-    letter-spacing: 0.05em;
-  }
-  .card-wage {
-    font-size: 12px;
-    color: var(--text-dim);
-    font-style: italic;
-    white-space: nowrap;
-  }
+/* Print button */
+.btn-print {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid var(--border-hi);
+  color: var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-print:hover { border-color: var(--gold); background: rgba(201,150,58,0.08); }
 
-  .card-qty {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .qty-btn {
-    width: 28px; height: 28px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    color: var(--gold);
-    font-size: 18px;
-    line-height: 1;
-    border-radius: 3px;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    transition: all 0.15s;
-    flex-shrink: 0;
-    user-select: none;
-  }
-  .qty-btn:hover { border-color: var(--gold); background: rgba(201,150,58,0.1); }
-  .qty-num {
-    font-family: 'Cinzel', serif;
-    font-size: 20px;
-    color: var(--gold-hi);
-    min-width: 32px;
-    text-align: center;
-  }
-  .qty-cap {
-    font-size: 11px;
-    color: var(--text-dim);
-    font-style: italic;
-  }
+/* ─── BUILDINGS TAB ─── */
+.buildings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 10px;
+}
+.building-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.18s;
+  user-select: none;
+  position: relative;
+}
+.building-card:hover { border-color: var(--border-hi); }
+.building-card.built {
+  border-color: var(--gold-dim);
+  background: #1e1a0e;
+}
+.building-card.built::before {
+  content: '✦';
+  position: absolute;
+  top: 10px; right: 12px;
+  color: var(--gold);
+  font-size: 12px;
+}
+.b-name {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--parchment);
+  margin-bottom: 6px;
+}
+.building-card.built .b-name { color: var(--gold-hi); }
+.b-cost {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+.b-cost span { color: var(--text); }
+.b-note {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+.b-fame {
+  display: inline-block;
+  font-size: 10px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  margin-top: 4px;
+}
 
-  .card-output {
-    font-size: 13px;
-    color: var(--text-dim);
-    font-style: italic;
-    border-top: 1px solid var(--border);
-    padding-top: 10px;
-  }
-  .card-output span {
-    color: var(--text);
-  }
+/* Building totals */
+.build-totals {
+  background: var(--surface2);
+  border: 1px solid var(--border-hi);
+  border-radius: 4px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+.build-totals-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.mat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.mat-chip {
+  font-size: 14px;
+  font-family: 'Cinzel', serif;
+}
+.mat-chip span { color: var(--text-dim); font-size: 11px; }
+.c-wood  { color: #c0905a; }
+.c-stone { color: #a09888; }
+.c-iron  { color: #8899bb; }
+.c-ore   { color: #60a888; }
+.fame-chip { color: var(--gold); }
 
-  /* Special: peasant with submode */
-  .peasant-modes {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .pmode-btn {
-    padding: 5px 10px;
-    font-size: 11px;
-    font-family: 'Cinzel', serif;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .pmode-btn.active {
-    border-color: var(--green);
-    color: #7fc47f;
-    background: rgba(74,122,74,0.12);
-  }
+/* ─── SERVANTS TAB ─── */
+.global-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: flex-end;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 18px;
+  margin-bottom: 4px;
+}
+.ctrl-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 130px; }
+label.ctrl-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+input[type="number"] {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--gold-hi);
+  font-family: 'IM Fell English', serif;
+  font-size: 18px;
+  padding: 7px 10px;
+  border-radius: 3px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input[type="number"]:focus { border-color: var(--gold); }
 
-  /* Results panel */
-  .results {
-    background: var(--surface);
-    border: 1px solid var(--border-hi);
-    border-radius: 4px;
-    padding: 24px;
-    margin-top: 4px;
-  }
-  .results-title {
-    font-family: 'Cinzel', serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--gold-hi);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    text-align: center;
-  }
+.toggle-btn {
+  display: flex; align-items: center; gap: 9px;
+  cursor: pointer; user-select: none;
+  padding: 8px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-dim);
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all 0.2s;
+}
+.toggle-btn.active { border-color: var(--rust-hi); color: var(--rust-hi); background: rgba(139,58,42,0.1); }
+.toggle-btn .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; flex-shrink: 0; }
+.toggle-btn.active .dot { background: var(--rust-hi); }
 
-  .res-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .res-item {
-    text-align: center;
-    padding: 14px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    transition: all 0.2s;
-  }
-  .res-item.nonzero { border-color: var(--border-hi); }
-  .res-val {
-    font-family: 'Cinzel', serif;
-    font-size: 28px;
-    font-weight: 900;
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-  .res-label {
-    font-size: 11px;
-    font-family: 'Cinzel', serif;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-  }
-  .c-wood  { color: #a07840; }
-  .c-stone { color: #9a9080; }
-  .c-iron  { color: #7888a0; }
-  .c-ore   { color: #5a8870; }
-  .c-meat  { color: #c05050; }
-  .c-hides { color: #a08050; }
-  .c-grain { color: #c8a840; }
-  .c-veg   { color: #70a870; }
-  .c-wool  { color: #c0b0a0; }
-  .c-flour { color: #e0d0b0; }
-  .c-food  { color: #c8b040; }
-  .c-leather{ color: #a06830; }
-  .c-cloth { color: #8090c0; }
+.season-group { display: flex; gap: 5px; flex-wrap: wrap; }
+.season-btn {
+  padding: 6px 11px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-dim);
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.season-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(201,150,58,0.08); }
 
-  .wage-block {
-    border-top: 1px solid var(--border);
-    padding-top: 16px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .wage-total {
-    font-size: 15px;
-  }
-  .wage-total strong {
-    font-family: 'Cinzel', serif;
-    font-size: 18px;
-  }
-  .coin-copper { color: var(--coin-c); }
-  .coin-silver { color: var(--coin-s); }
+/* servant cards */
+.servants-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.servant-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: border-color 0.2s;
+}
+.servant-card.active { border-color: var(--border-hi); }
+.servant-card.locked {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.servant-card.locked::after {
+  content: '🔒 нужна постройка';
+  font-size: 11px;
+  font-style: italic;
+  color: var(--text-dim);
+}
+.card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.card-name { font-family: 'Cinzel', serif; font-size: 12px; font-weight: 600; color: var(--parchment); letter-spacing: 0.05em; }
+.servant-card.active .card-name { color: var(--gold-hi); }
+.card-wage { font-size: 11px; color: var(--text-dim); font-style: italic; white-space: nowrap; }
 
-  .note {
-    font-size: 12px;
-    font-style: italic;
-    color: var(--text-dim);
-    margin-top: 8px;
-  }
+.card-qty { display: flex; align-items: center; gap: 7px; }
+.qty-btn {
+  width: 26px; height: 26px;
+  background: var(--bg); border: 1px solid var(--border);
+  color: var(--gold); font-size: 17px;
+  border-radius: 3px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s; flex-shrink: 0; user-select: none;
+}
+.qty-btn:hover { border-color: var(--gold); background: rgba(201,150,58,0.08); }
+.qty-num { font-family: 'Cinzel', serif; font-size: 18px; color: var(--gold-hi); min-width: 28px; text-align: center; }
+.qty-cap { font-size: 10px; color: var(--text-dim); font-style: italic; }
 
-  /* Peasant special notes */
-  .peasant-note {
-    font-size: 12px;
-    font-style: italic;
-    color: #7fc47f;
-    margin-top: 4px;
-  }
+.card-desc { font-size: 12px; color: var(--text-dim); font-style: italic; border-top: 1px solid var(--border); padding-top: 8px; }
+.card-desc span { color: var(--text); }
 
-  hr.fancy {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 4px 0;
-  }
+.peasant-modes { display: flex; gap: 5px; flex-wrap: wrap; }
+.pmode-btn {
+  padding: 4px 9px; font-size: 10px;
+  font-family: 'Cinzel', serif; letter-spacing: 0.05em; text-transform: uppercase;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 3px;
+  color: var(--text-dim); cursor: pointer; transition: all 0.2s;
+}
+.pmode-btn.active { border-color: var(--green-hi); color: var(--green-hi); background: rgba(74,122,74,0.1); }
+.peasant-note { font-size: 11px; color: #6ab06a; font-style: italic; }
 
-  @media (max-width: 500px) {
-    .global-bar { flex-direction: column; }
-    .res-grid { grid-template-columns: repeat(2, 1fr); }
-  }
+/* Results */
+.results {
+  background: var(--surface2);
+  border: 1px solid var(--border-hi);
+  border-radius: 4px;
+  padding: 20px;
+}
+.results-header {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-hi);
+  margin-bottom: 16px;
+  text-align: center;
+}
+.res-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.res-item {
+  text-align: center;
+  padding: 12px 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  transition: border-color 0.2s;
+}
+.res-item.nonzero { border-color: var(--border-hi); }
+.res-val { font-family: 'Cinzel', serif; font-size: 24px; font-weight: 900; line-height: 1; margin-bottom: 3px; }
+.res-lbl { font-size: 10px; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); }
+
+.rw { color: #c0905a; }
+.rs { color: #a09888; }
+.ri { color: #8899bb; }
+.ro { color: #60a888; }
+.rm { color: #c06060; }
+.rh { color: #a08060; }
+.rg { color: #c8a840; }
+.rv { color: #70a870; }
+.rwl{ color: #c0b0a0; }
+.rf { color: #e0d0b0; }
+.rfd{ color: #c8b040; }
+.rl { color: #a06830; }
+.rc { color: #8090c0; }
+
+.wage-row {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  display: flex; flex-wrap: wrap; gap: 12px;
+  align-items: flex-start; justify-content: space-between;
+}
+.wage-total { font-size: 14px; }
+.wage-total strong { font-family: 'Cinzel', serif; font-size: 17px; }
+.coin-c { color: var(--coin-c); }
+.coin-s { color: var(--coin-s); }
+.note-small { font-size: 11px; font-style: italic; color: var(--text-dim); }
+
+/* ─── PRINT STYLES ─── */
+@media print {
+  .app-header .tabs, .tab-btn, .btn-print, #tab-buildings, #tab-servants { display: none !important; }
+  .tab-panel { display: block !important; }
+  body { background: white; color: black; font-size: 12px; }
+  .defense-panel, .pp-input, .pp-textarea, .pp-select, .hero-input { background: white !important; color: black !important; border-color: #ccc !important; }
+  .pp-label, .section-title, .def-label { color: #333 !important; }
+  .def-val, .citadel-name-input { color: black !important; }
+  .build-totals, .building-card.built { background: #f5f5f0 !important; border-color: #aaa !important; }
+}
+
+/* ─── MISC ─── */
+@media (max-width: 500px) {
+  .global-bar { flex-direction: column; }
+  .res-grid { grid-template-columns: repeat(3, 1fr); }
+  .buildings-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-<header>
-  <h1>Калькулятор цитадели</h1>
-  <p class="subtitle">Запретные Земли &mdash; производство ресурсов слугами</p>
-</header>
-
-<!-- Global settings -->
-<div class="section-title">Настройки периода</div>
-<div class="global-bar">
-  <div class="ctrl-group">
-    <label>Дней</label>
-    <input type="number" id="days" min="1" max="365" value="7">
+<div class="app-header">
+  <div class="header-top">
+    <div style="flex:1">
+      <input class="citadel-name-input" id="citadel-name" type="text"
+             placeholder="Название цитадели..." maxlength="60"
+             oninput="onNameChange()">
+    </div>
+    <div class="header-badge">Запретные&nbsp;Земли</div>
   </div>
-  <div class="ctrl-group">
-    <label>Режим работы</label>
-    <div class="toggle-wrap">
-      <div class="toggle-btn" id="overtime-btn" onclick="toggleOvertime()">
-        <div class="dot"></div>
-        <span>Переработка (×1.5 ресурсов, ×2 жалованье)</span>
+  <div class="tabs" style="max-width:940px">
+    <div class="tab-btn active" onclick="switchTab('passport')">Паспорт</div>
+    <div class="tab-btn" onclick="switchTab('buildings')">Постройки</div>
+    <div class="tab-btn" onclick="switchTab('servants')">Слуги</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ══ PASSPORT ══ -->
+  <div id="tab-passport" class="tab-panel active">
+
+    <div class="section-title">Цитадель</div>
+    <div class="passport-grid">
+      <div class="pp-field">
+        <div class="pp-label">Тип местности</div>
+        <select class="pp-select" id="location-type" onchange="recalcAll()">
+          <option value="any">Любая</option>
+          <option value="forest">Лес (дровосек работает)</option>
+          <option value="hills">Холмы / горы (шахтёр работает)</option>
+          <option value="plains">Равнина (поля, охота)</option>
+          <option value="coast">Побережье</option>
+        </select>
+      </div>
+      <div class="pp-field">
+        <div class="pp-label">Изъяны цитадели</div>
+        <input class="pp-input" id="flaw" type="text" placeholder="Протекает крыша, крысы...">
+      </div>
+      <div class="pp-field full">
+        <div class="pp-label">Описание / история</div>
+        <textarea class="pp-textarea" id="description" placeholder="Заброшенный замок на краю болот..."></textarea>
       </div>
     </div>
-  </div>
-  <div class="ctrl-group">
-    <label>Сезон</label>
-    <div class="season-group">
-      <div class="season-btn active" onclick="setSeason('spring')" data-s="spring">Весна</div>
-      <div class="season-btn" onclick="setSeason('summer')" data-s="summer">Лето</div>
-      <div class="season-btn" onclick="setSeason('autumn')" data-s="autumn">Осень</div>
-      <div class="season-btn" onclick="setSeason('winter')" data-s="winter">Зима</div>
+
+    <div class="section-title">Герои</div>
+    <div class="heroes-list" id="heroes-list"></div>
+    <button class="btn-add-hero" onclick="addHero()">+ Добавить героя</button>
+
+    <div class="section-title">Класс защиты</div>
+    <div class="defense-panel">
+      <div>
+        <div class="def-val" id="def-val">—</div>
+        <div class="def-label">Класс защиты</div>
+      </div>
+      <div class="def-breakdown" id="def-breakdown">
+        Постройте стены и наймите стражников
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- Extractors -->
-<div class="section-title">Добытчики</div>
-<div class="servants-grid" id="extractors-grid"></div>
-
-<!-- Processors -->
-<div class="section-title">Переработчики</div>
-<div class="servants-grid" id="processors-grid"></div>
-
-<!-- Support / special -->
-<div class="section-title">Прочие слуги</div>
-<div class="servants-grid" id="support-grid"></div>
-
-<!-- Results -->
-<div class="section-title">Итог за период</div>
-<div class="results">
-  <div class="results-title" id="results-title">Итог за 7 дней</div>
-  <div class="res-grid" id="res-grid"></div>
-  <div class="wage-block">
-    <div>
-      <div class="wage-total">Жалованье: <strong id="wage-display">—</strong></div>
-      <div class="note" id="wage-note"></div>
+    <div class="section-title">Сохранение и экспорт</div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+      <button class="btn-print" onclick="exportJSON()">💾 Сохранить файл (.json)</button>
+      <label class="btn-print" style="cursor:pointer">
+        📂 Загрузить файл
+        <input type="file" accept=".json" id="import-input" style="display:none" onchange="importJSON(event)">
+      </label>
+      <button class="btn-print" onclick="window.print()">🖨 Распечатать паспорт</button>
     </div>
-    <div class="note" id="season-note"></div>
-  </div>
-</div>
+    <div id="save-status" style="font-size:12px;font-style:italic;color:var(--text-dim);margin-top:8px"></div>
 
-</div>
+  </div>
+
+  <!-- ══ BUILDINGS ══ -->
+  <div id="tab-buildings" class="tab-panel">
+
+    <div class="section-title">Итого материалов для постройки</div>
+    <div class="build-totals">
+      <div class="build-totals-title">Выбранные постройки</div>
+      <div class="mat-row" id="mat-row">
+        <span style="color:var(--text-dim);font-style:italic">Отметьте постройки ниже</span>
+      </div>
+    </div>
+
+    <div class="section-title">Добыча ресурсов</div>
+    <div class="buildings-grid" id="bld-extraction"></div>
+
+    <div class="section-title">Производство и переработка</div>
+    <div class="buildings-grid" id="bld-production"></div>
+
+    <div class="section-title">Хранение</div>
+    <div class="buildings-grid" id="bld-storage"></div>
+
+    <div class="section-title">Военные и защитные</div>
+    <div class="buildings-grid" id="bld-military"></div>
+
+    <div class="section-title">Прочие</div>
+    <div class="buildings-grid" id="bld-other"></div>
+
+  </div>
+
+  <!-- ══ SERVANTS ══ -->
+  <div id="tab-servants" class="tab-panel">
+
+    <div class="global-bar">
+      <div class="ctrl-group">
+        <label class="ctrl-label">Дней</label>
+        <input type="number" id="days" min="1" max="365" value="7" oninput="recalcAll()">
+      </div>
+      <div class="ctrl-group">
+        <label class="ctrl-label">Режим работы</label>
+        <div class="toggle-btn" id="overtime-btn" onclick="toggleOvertime()">
+          <div class="dot"></div>
+          <span>Переработка (3 четв./день, ×2 жалованье)</span>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <label class="ctrl-label">Сезон</label>
+        <div class="season-group">
+          <div class="season-btn active" data-s="spring" onclick="setSeason('spring')">Весна</div>
+          <div class="season-btn" data-s="summer" onclick="setSeason('summer')">Лето</div>
+          <div class="season-btn" data-s="autumn" onclick="setSeason('autumn')">Осень</div>
+          <div class="season-btn" data-s="winter" onclick="setSeason('winter')">Зима</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Добытчики</div>
+    <div class="servants-grid" id="grid-extractors"></div>
+
+    <div class="section-title">Переработчики</div>
+    <div class="servants-grid" id="grid-processors"></div>
+
+    <div class="section-title">Прочие</div>
+    <div class="servants-grid" id="grid-support"></div>
+
+    <div class="section-title">Итог за период</div>
+    <div class="results">
+      <div class="results-header" id="res-title">Итог за 7 дней</div>
+      <div class="res-grid" id="res-grid"></div>
+      <div class="wage-row">
+        <div>
+          <div class="wage-total">Жалованье: <strong id="wage-out">—</strong></div>
+          <div class="note-small" id="wage-note"></div>
+        </div>
+        <div class="note-small" id="season-notes"></div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /main -->
 
 <script>
-// =====================
-// DATA
-// =====================
+// ═══════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════
 
-// quarterPerDay: 2 normal, 3 overtime
-// productionPerQuarter: per servant
-// wage: in copper per day (1 silver = 10 copper)
-// maxPerBuilding: дюжина = 12 (for mine/quarry)
+const BUILDINGS = [
+  // extraction
+  { id:'quarry',   name:'Каменоломня',   cat:'extraction', mat:{},                             time:'1 день',   fame:0, note:'Работает до 12 дробильщиков', req:[], unlocks:['quarryman'] },
+  { id:'mine',     name:'Шахта',         cat:'extraction', mat:{wood:60},                      time:'1 месяц',  fame:1, note:'До 12 шахтёров. Риск обвала.', req:['builder'], unlocks:['miner'] },
+  { id:'field',    name:'Поле',          cat:'extraction', mat:{},                             time:'1 месяц',  fame:0, note:'Осенью 300 мер зерна за неделю', req:[], unlocks:[] },
+  { id:'garden',   name:'Огород',        cat:'extraction', mat:{},                             time:'1 месяц',  fame:0, note:'Весна/лето: 10 мер овощей в неделю', req:[], unlocks:[] },
+  { id:'sheepfold',name:'Овчарня',       cat:'extraction', mat:{wood:20},                      time:'1 день',   fame:0, note:'До 12 овец. 2 стрижки в год.', req:[], unlocks:[] },
+  { id:'pasture',  name:'Пастбище',      cat:'extraction', mat:{wood:20},                      time:'1 день',   fame:0, note:'До 12 коров. Молоко ежедневно.', req:[], unlocks:[] },
+  { id:'pigsty',   name:'Свинарник',     cat:'extraction', mat:{wood:50},                      time:'1 день',   fame:0, note:'6 мер мяса/свинья. 2d6 поросят в год.', req:[], unlocks:[] },
+  // production
+  { id:'smithy',   name:'Кузница',       cat:'production', mat:{iron:60, stone:400},           time:'1 неделя', fame:1, note:'Руда → железо (до 12 мер/четверть)', req:['builder','hearth'], unlocks:['blacksmith'] },
+  { id:'mill',     name:'Мельница',      cat:'production', mat:{wood:400, stone:10},           time:'2 недели', fame:0, note:'Зерно → мука (до 12 мер/четверть)', req:['builder'], unlocks:['miller'] },
+  { id:'bakery',   name:'Пекарня',       cat:'production', mat:{stone:200, wood:40},           time:'1 неделя', fame:0, note:'Мука → еда (до 12 мер/четверть)', req:['builder','hearth'], unlocks:['baker'] },
+  { id:'tavern',   name:'Трактир',       cat:'production', mat:{wood:250},                     time:'1 неделя', fame:1, note:'Мясо/овощи → еда (до 12 мер/четверть)', req:['builder'], unlocks:['innkeeper'] },
+  { id:'tannery',  name:'Сыромятня',     cat:'production', mat:{wood:100},                     time:'2 дня',    fame:0, note:'Шкуры → кожа (до 12 мер/четверть)', req:[], unlocks:['tanner'] },
+  { id:'sewing',   name:'Швейная мастерская', cat:'production', mat:{wood:100},               time:'2 дня',    fame:0, note:'Шерсть → ткань (до 12 мер/четверть)', req:['builder'], unlocks:['tailor'] },
+  // storage
+  { id:'cellar',   name:'Погреб',        cat:'storage',    mat:{stone:200},                    time:'1 неделя', fame:0, note:'Срок хранения еды ×10', req:['builder'], unlocks:[] },
+  { id:'treasury', name:'Сокровищница',  cat:'storage',    mat:{stone:200, wood:100, iron:10}, time:'2 недели', fame:0, note:'Надёжное хранение ценностей', req:['builder'], unlocks:[] },
+  // military
+  { id:'walls',    name:'Крепостные стены', cat:'military', mat:{stone:600},                  time:'1 месяц',  fame:1, note:'+2 к классу защиты',     req:['builder'], unlocks:['portcullis'] },
+  { id:'portcullis',name:'Опускная решётка', cat:'military', mat:{iron:100},                  time:'1 неделя', fame:0, note:'+1 к классу защиты',     req:['builder','walls','smithy'], unlocks:[] },
+  { id:'tower',    name:'Сторожевая башня', cat:'military', mat:{wood:200},                   time:'2 недели', fame:0, note:'+1 защита, +2 к разведке', req:['builder'], unlocks:[] },
+  { id:'moat',     name:'Ров',           cat:'military',   mat:{},                             time:'1 месяц',  fame:1, note:'+1 к классу защиты',     req:['builder','walls'], unlocks:[] },
+  { id:'dungeon',  name:'Темница',       cat:'military',   mat:{stone:50, iron:20},            time:'1 неделя', fame:1, note:'4 узника. Нужен тюремщик.', req:[], unlocks:['warden'] },
+  { id:'gallows',  name:'Виселица',      cat:'military',   mat:{wood:20},                      time:'1 день',   fame:1, note:'−2 к событиям после казни', req:[], unlocks:['executioner'] },
+  // other
+  { id:'hearth',   name:'Очаг',          cat:'other',      mat:{stone:20},                     time:'1 день',   fame:0, note:'Нейтрализует переохлаждение', req:[], unlocks:[] },
+  { id:'well',     name:'Колодец',       cat:'other',      mat:{stone:50},                     time:'2 недели', fame:0, note:'Вода для всех жителей', req:[], unlocks:[] },
+  { id:'stable',   name:'Конюшня',       cat:'other',      mat:{wood:400},                     time:'2 дня',    fame:0, note:'Защита верховых животных', req:[], unlocks:[] },
+  { id:'library',  name:'Библиотека',    cat:'other',      mat:{wood:100},                     time:'1 неделя', fame:1, note:'+2 к проверкам при использовании', req:[], unlocks:[] },
+  { id:'scriptorium',name:'Скрипторий', cat:'other',       mat:{wood:100},                     time:'1 неделя', fame:1, note:'+2 к записи заклинаний', req:['builder'], unlocks:[] },
+  { id:'sanctuary',name:'Святилище',    cat:'other',       mat:{wood:80},                      time:'1 неделя', fame:1, note:'+1 воля при возвращении', req:['builder'], unlocks:[] },
+  { id:'market',   name:'Рыночная площадь', cat:'other',   mat:{wood:60},                      time:'1 неделя', fame:1, note:'Торговцы без жалованья', req:[], unlocks:[] },
+  { id:'dovecote', name:'Голубятня',     cat:'other',      mat:{wood:30},                      time:'1 день',   fame:1, note:'Почтовые голуби', req:[], unlocks:[] },
+  { id:'training', name:'Полигон',       cat:'other',      mat:{wood:40},                      time:'2 дня',    fame:0, note:'+1 опыт ближ. боя за четверть', req:[], unlocks:[] },
+  { id:'range',    name:'Стрельбище',    cat:'other',      mat:{wood:20},                      time:'1 день',   fame:0, note:'+1 опыт меткости за четверть', req:[], unlocks:[] },
+];
 
 const SERVANTS = {
   extractors: [
-    {
-      id: 'woodcutter',
-      name: 'Дровосек',
-      wageCopperPerDay: 4,
-      desc: '2 меры дерева за четверть суток',
-      outputs: [{ res: 'wood', perQuarter: 2 }],
-      note: 'Работает в лесу',
-    },
-    {
-      id: 'miner',
-      name: 'Шахтёр',
-      wageCopperPerDay: 4,
-      desc: '2 меры железной руды за четверть суток',
-      outputs: [{ res: 'ore', perQuarter: 2 }],
-      note: 'Шахта, до 12 шахтёров одновременно',
-      maxPerBuilding: 12,
-    },
-    {
-      id: 'quarryman',
-      name: 'Дробильщик',
-      wageCopperPerDay: 3,
-      desc: '2 меры камня за четверть суток',
-      outputs: [{ res: 'stone', perQuarter: 2 }],
-      note: 'Каменоломня, до 12 дробильщиков одновременно',
-      maxPerBuilding: 12,
-    },
-    {
-      id: 'hunter',
-      name: 'Охотник',
-      wageCopperPerDay: 6,
-      desc: '1 мера мяса + 1 мера шкур за четверть суток',
-      outputs: [
-        { res: 'meat', perQuarter: 1 },
-        { res: 'hides', perQuarter: 1 },
-      ],
-      note: 'Дикая местность. Раз в неделю риск нападения зверя.',
-    },
+    { id:'woodcutter', name:'Дровосек',   wage:4,  desc:'2 меры дерева / четверть суток', outputs:[{res:'wood',pq:2}],                          req:null },
+    { id:'quarryman',  name:'Дробильщик', wage:3,  desc:'2 меры камня / четверть суток',  outputs:[{res:'stone',pq:2}],  maxPerBuilding:12,     req:'quarry' },
+    { id:'miner',      name:'Шахтёр',     wage:4,  desc:'2 меры железной руды / четверть',outputs:[{res:'ore',pq:2}],    maxPerBuilding:12,     req:'mine' },
+    { id:'hunter',     name:'Охотник',    wage:6,  desc:'1 мясо + 1 шкура / четверть',    outputs:[{res:'meat',pq:1},{res:'hides',pq:1}],       req:null },
   ],
-
   processors: [
-    {
-      id: 'blacksmith',
-      name: 'Кузнец',
-      wageCopperPerDay: 10, // 1 silver
-      desc: 'До 12 мер руды → 12 мер железа за четверть суток',
-      outputs: [{ res: 'iron', perQuarter: 12, inputRes: 'ore', inputAmt: 12 }],
-      note: 'Требует кузницу + железную руду',
-      maxPerQuarter: 12,
-    },
-    {
-      id: 'miller',
-      name: 'Мельник',
-      wageCopperPerDay: 8,
-      desc: 'До 12 мер зерна → 12 мер муки за четверть суток',
-      outputs: [{ res: 'flour', perQuarter: 12, inputRes: 'grain', inputAmt: 12 }],
-      note: 'Требует мельницу + зерно',
-      maxPerQuarter: 12,
-    },
-    {
-      id: 'baker',
-      name: 'Пекарь',
-      wageCopperPerDay: 6,
-      desc: 'До 12 мер муки → 12 мер еды за четверть суток',
-      outputs: [{ res: 'food', perQuarter: 12, inputRes: 'flour', inputAmt: 12 }],
-      note: 'Требует пекарню + муку',
-      maxPerQuarter: 12,
-    },
-    {
-      id: 'innkeeper',
-      name: 'Трактирщик',
-      wageCopperPerDay: 12,
-      desc: 'До 12 мер мяса/овощей → 12 мер еды за четверть суток',
-      outputs: [{ res: 'food', perQuarter: 12, inputRes: 'meat/овощи', inputAmt: 12 }],
-      note: 'Требует трактир + мясо или овощи',
-      maxPerQuarter: 12,
-    },
-    {
-      id: 'tanner',
-      name: 'Кожевник',
-      wageCopperPerDay: 6,
-      desc: 'До 12 мер шкур → 12 мер кожи за четверть суток',
-      outputs: [{ res: 'leather', perQuarter: 12, inputRes: 'hides', inputAmt: 12 }],
-      note: 'Требует сыромятню + шкуры',
-      maxPerQuarter: 12,
-    },
-    {
-      id: 'tailor',
-      name: 'Портной',
-      wageCopperPerDay: 8,
-      desc: 'До 12 мер шерсти → 12 мер ткани за четверть суток',
-      outputs: [{ res: 'cloth', perQuarter: 12, inputRes: 'wool', inputAmt: 12 }],
-      note: 'Требует швейную мастерскую + шерсть',
-      maxPerQuarter: 12,
-    },
+    { id:'blacksmith', name:'Кузнец',     wage:10, desc:'До 12 руды → 12 железа / четверть', outputs:[{res:'iron',pq:12,inp:'ore'}],   req:'smithy' },
+    { id:'miller',     name:'Мельник',    wage:8,  desc:'До 12 зерна → 12 муки / четверть',  outputs:[{res:'flour',pq:12,inp:'grain'}],req:'mill' },
+    { id:'baker',      name:'Пекарь',     wage:6,  desc:'До 12 муки → 12 еды / четверть',    outputs:[{res:'food',pq:12,inp:'flour'}],  req:'bakery' },
+    { id:'innkeeper',  name:'Трактирщик', wage:12, desc:'До 12 мяса/овощей → 12 еды / четверть', outputs:[{res:'food',pq:12,inp:'мясо/овощи'}], req:'tavern' },
+    { id:'tanner',     name:'Кожевник',   wage:6,  desc:'До 12 шкур → 12 кожи / четверть',   outputs:[{res:'leather',pq:12,inp:'hides'}],req:'tannery' },
+    { id:'tailor',     name:'Портной',    wage:8,  desc:'До 12 шерсти → 12 ткани / четверть',outputs:[{res:'cloth',pq:12,inp:'wool'}],  req:'sewing' },
   ],
-
   support: [
-    {
-      id: 'peasant',
-      name: 'Крестьянин',
-      wageCopperPerDay: 5,
-      desc: 'Поле / огород / овчарня / пастбище',
-      note: 'Сезонная работа. Режим переработки не применим.',
-      special: 'peasant',
-    },
-    {
-      id: 'laborer',
-      name: 'Разнорабочий',
-      wageCopperPerDay: 3,
-      desc: 'Обслуживание цитадели (не производит ресурсов)',
-      outputs: [],
-      note: 'Не требует проверок ремесла',
-    },
-    {
-      id: 'guard',
-      name: 'Стражник',
-      wageCopperPerDay: 10,
-      desc: 'Охрана. +1 к классу защиты за каждые 10 чел.',
-      outputs: [],
-      note: 'Вооружённый охранник',
-    },
-    {
-      id: 'architect',
-      name: 'Архитектор',
-      wageCopperPerDay: 20,
-      desc: 'Возводит постройки без проверок',
-      outputs: [],
-      note: 'Редкий специалист',
-    },
+    { id:'peasant',    name:'Крестьянин', wage:5,  desc:'Поле / огород / овчарня / пастбище', special:'peasant', req:null },
+    { id:'laborer',    name:'Разнорабочий',wage:3, desc:'Обслуживание цитадели',              outputs:[],        req:null },
+    { id:'guard',      name:'Стражник',   wage:10, desc:'+1 КЗ за каждые 10 чел.',            outputs:[],        req:null },
+    { id:'warden',     name:'Тюремщик',   wage:8,  desc:'Охрана темницы',                     outputs:[],        req:'dungeon' },
+    { id:'executioner',name:'Палач',      wage:10, desc:'Казни на виселице',                  outputs:[],        req:'gallows' },
+    { id:'architect',  name:'Архитектор', wage:20, desc:'Возводит постройки автоматически',   outputs:[],        req:null },
   ],
 };
 
-const RES_META = {
-  wood:    { label: 'Дерево',    cls: 'c-wood',   icon: '🪵' },
-  stone:   { label: 'Камень',    cls: 'c-stone',  icon: '🪨' },
-  ore:     { label: 'Жел. руда', cls: 'c-ore',    icon: '⛏' },
-  iron:    { label: 'Железо',    cls: 'c-iron',   icon: '⚙' },
-  meat:    { label: 'Мясо',      cls: 'c-meat',   icon: '🥩' },
-  hides:   { label: 'Шкуры',    cls: 'c-hides',  icon: '🦌' },
-  grain:   { label: 'Зерно',     cls: 'c-grain',  icon: '🌾' },
-  veg:     { label: 'Овощи',     cls: 'c-veg',    icon: '🥕' },
-  wool:    { label: 'Шерсть',    cls: 'c-wool',   icon: '🐑' },
-  flour:   { label: 'Мука',      cls: 'c-flour',  icon: '🌾' },
-  food:    { label: 'Еда',       cls: 'c-food',   icon: '🍞' },
-  leather: { label: 'Кожа',      cls: 'c-leather',icon: '🧤' },
-  cloth:   { label: 'Ткань',     cls: 'c-cloth',  icon: '🧵' },
+const RES = {
+  wood:   { lbl:'Дерево',    cls:'rw',  icon:'🪵' },
+  stone:  { lbl:'Камень',    cls:'rs',  icon:'🪨' },
+  ore:    { lbl:'Ж. руда',   cls:'ro',  icon:'⛏'  },
+  iron:   { lbl:'Железо',    cls:'ri',  icon:'⚙'  },
+  meat:   { lbl:'Мясо',      cls:'rm',  icon:'🥩' },
+  hides:  { lbl:'Шкуры',     cls:'rh',  icon:'🦌' },
+  grain:  { lbl:'Зерно',     cls:'rg',  icon:'🌾' },
+  veg:    { lbl:'Овощи',     cls:'rv',  icon:'🥕' },
+  wool:   { lbl:'Шерсть',    cls:'rwl', icon:'🐑' },
+  flour:  { lbl:'Мука',      cls:'rf',  icon:'🫙' },
+  food:   { lbl:'Еда',       cls:'rfd', icon:'🍞' },
+  leather:{ lbl:'Кожа',      cls:'rl',  icon:'🧤' },
+  cloth:  { lbl:'Ткань',     cls:'rc',  icon:'🧵' },
 };
 
-// STATE
-const state = {
+const PEASANT_MODES = [
+  { id:'field',   label:'Поле',    note:'Осенью: 300 мер зерна за неделю сбора. Вне сезона — 0.' },
+  { id:'garden',  label:'Огород',  note:'Весна/лето: 10 мер овощей раз в неделю.' },
+  { id:'sheep',   label:'Овчарня', note:'2 раза в год: 2 меры шерсти/овцу. Укажи поголовье отдельно.' },
+  { id:'cattle',  label:'Пастбище',note:'Ежедневно: 1 мера еды (молоко) / крестьянин. Одна корова на крестьянина.' },
+];
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+const S = {
+  builtIds: new Set(),
+  counts: {},
   days: 7,
   overtime: false,
   season: 'spring',
-  counts: {},
-  peasantMode: 'field', // field | garden | sheep | cattle
+  peasantMode: 'field',
+  heroes: [],
 };
 
-// Peasant modes
-const PEASANT_MODES = [
-  { id: 'field',  label: 'Поле',     note: 'Осенью: 300 мер зерна за неделю сбора. Вне сезона — не работает.' },
-  { id: 'garden', label: 'Огород',   note: 'Весна/Лето: 10 мер овощей раз в неделю.' },
-  { id: 'sheep',  label: 'Овчарня',  note: '2 раза в год: 2 меры шерсти/овцу. Мясо: 5 мер/овца в любое время.' },
-  { id: 'cattle', label: 'Пастбище', note: 'Ежедневно: 1 мера еды/корову (молоко). Мясо: 8 мер/корову.' },
-];
-
-// =====================
-// INIT
-// =====================
-function init() {
-  buildGrid('extractors-grid', SERVANTS.extractors);
-  buildGrid('processors-grid', SERVANTS.processors);
-  buildGrid('support-grid', SERVANTS.support);
-  document.getElementById('days').addEventListener('input', e => {
-    state.days = Math.max(1, parseInt(e.target.value) || 1);
-    recalc();
-  });
-  recalc();
+// ═══════════════════════════════════════════
+//  TABS
+// ═══════════════════════════════════════════
+function switchTab(id) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
 }
 
-function buildGrid(gridId, list) {
+// ═══════════════════════════════════════════
+//  PASSPORT
+// ═══════════════════════════════════════════
+function onNameChange() {
+  document.title = (document.getElementById('citadel-name').value || 'Цитадель') + ' — Запретные Земли';
+}
+
+function addHero(name = '') {
+  const idx = S.heroes.length;
+  S.heroes.push(name);
+  const list = document.getElementById('heroes-list');
+  const row = document.createElement('div');
+  row.className = 'hero-row';
+  row.id = 'hero-row-' + idx;
+  row.innerHTML = `
+    <input class="hero-input" type="text" placeholder="Имя героя, класс..." value="${name}"
+           oninput="S.heroes[${idx}]=this.value; recalcDefense()">
+    <div class="hero-del" onclick="removeHero(${idx})">×</div>`;
+  list.appendChild(row);
+  recalcDefense();
+}
+
+function removeHero(idx) {
+  S.heroes.splice(idx, 1);
+  renderHeroes();
+  recalcDefense();
+}
+
+function renderHeroes() {
+  const list = document.getElementById('heroes-list');
+  list.innerHTML = '';
+  S.heroes.forEach((h, i) => {
+    const row = document.createElement('div');
+    row.className = 'hero-row';
+    row.innerHTML = `
+      <input class="hero-input" type="text" placeholder="Имя героя, класс..." value="${h}"
+             oninput="S.heroes[${i}]=this.value; recalcDefense()">
+      <div class="hero-del" onclick="removeHero(${i})">×</div>`;
+    list.appendChild(row);
+  });
+}
+
+function recalcDefense() {
+  let def = 0;
+  const parts = [];
+  const heroCount = S.heroes.filter(h => h.trim()).length;
+  if (heroCount > 0) { def += 1; parts.push(`<span>+1</span> герои`); }
+
+  const guards = S.counts['guard'] || 0;
+  const guardBonus = Math.min(5, Math.ceil(guards / 10));
+  if (guardBonus > 0) { def += guardBonus; parts.push(`<span>+${guardBonus}</span> стражники (${guards} чел.)`); }
+
+  if (S.builtIds.has('walls'))      { def += 2; parts.push(`<span>+2</span> стены`); }
+  if (S.builtIds.has('portcullis')) { def += 1; parts.push(`<span>+1</span> решётка`); }
+  if (S.builtIds.has('tower'))      { def += 1; parts.push(`<span>+1</span> башня`); }
+  if (S.builtIds.has('moat'))       { def += 1; parts.push(`<span>+1</span> ров`); }
+
+  document.getElementById('def-val').textContent = def || '—';
+  document.getElementById('def-breakdown').innerHTML = parts.length
+    ? parts.join('<br>')
+    : 'Постройте укрепления и наймите стражников';
+}
+
+// ═══════════════════════════════════════════
+//  BUILDINGS
+// ═══════════════════════════════════════════
+function buildBuildingCards() {
+  const cats = { extraction:'bld-extraction', production:'bld-production', storage:'bld-storage', military:'bld-military', other:'bld-other' };
+  Object.values(cats).forEach(id => document.getElementById(id).innerHTML = '');
+
+  BUILDINGS.forEach(b => {
+    const grid = document.getElementById(cats[b.cat]);
+    if (!grid) return;
+    const div = document.createElement('div');
+    div.className = 'building-card' + (S.builtIds.has(b.id) ? ' built' : '');
+    div.id = 'bcard-' + b.id;
+    div.onclick = () => toggleBuilding(b.id);
+
+    const matStr = Object.entries(b.mat).map(([k,v]) => {
+      const cls = k === 'wood' ? 'c-wood' : k === 'stone' ? 'c-stone' : 'c-iron';
+      return `<span class="${cls}">${v}</span> ${k==='wood'?'дерева':k==='stone'?'камня':'железа'}`;
+    }).join(', ');
+
+    const reqStr = b.req.length ? `<div class="b-note">Требования: ${b.req.join(', ')}</div>` : '';
+    const fameStr = b.fame ? `<span class="b-fame">✦ +${b.fame} известность</span>` : '';
+
+    div.innerHTML = `
+      <div class="b-name">${b.name}</div>
+      <div class="b-cost">${matStr || '<span>Без материалов</span>'} &nbsp;·&nbsp; ${b.time}</div>
+      ${reqStr}
+      <div class="b-note">${b.note}</div>
+      ${fameStr}`;
+    grid.appendChild(div);
+  });
+}
+
+function toggleBuilding(id) {
+  if (S.builtIds.has(id)) S.builtIds.delete(id);
+  else S.builtIds.add(id);
+  document.getElementById('bcard-' + id).classList.toggle('built', S.builtIds.has(id));
+  updateBuildTotals();
+  updateServantLocks();
+  recalcDefense();
+}
+
+function updateBuildTotals() {
+  const totals = {};
+  let fame = 0;
+  S.builtIds.forEach(id => {
+    const b = BUILDINGS.find(x => x.id === id);
+    if (!b) return;
+    Object.entries(b.mat).forEach(([k,v]) => totals[k] = (totals[k]||0) + v);
+    fame += b.fame;
+  });
+
+  const row = document.getElementById('mat-row');
+  if (!Object.keys(totals).length && !fame) {
+    row.innerHTML = `<span style="color:var(--text-dim);font-style:italic">Отметьте постройки ниже</span>`;
+    return;
+  }
+  const parts = [];
+  if (totals.wood)  parts.push(`<span class="mat-chip c-wood">${totals.wood} <span>дерева</span></span>`);
+  if (totals.stone) parts.push(`<span class="mat-chip c-stone">${totals.stone} <span>камня</span></span>`);
+  if (totals.iron)  parts.push(`<span class="mat-chip c-iron">${totals.iron} <span>железа</span></span>`);
+  if (fame)         parts.push(`<span class="mat-chip fame-chip">✦ +${fame} известность</span>`);
+  row.innerHTML = parts.join('&ensp;');
+}
+
+function updateServantLocks() {
+  const all = [...SERVANTS.extractors, ...SERVANTS.processors, ...SERVANTS.support];
+  all.forEach(s => {
+    const card = document.getElementById('scard-' + s.id);
+    if (!card) return;
+    const locked = s.req && !S.builtIds.has(s.req);
+    card.classList.toggle('locked', locked);
+    if (locked) { S.counts[s.id] = 0; updateQtyDisplay(s.id); }
+  });
+}
+
+function updateQtyDisplay(id) {
+  const el = document.getElementById('qty-' + id);
+  if (el) el.textContent = S.counts[id] || 0;
+}
+
+// ═══════════════════════════════════════════
+//  SERVANTS
+// ═══════════════════════════════════════════
+function buildServantCards() {
+  buildGroup('grid-extractors', SERVANTS.extractors);
+  buildGroup('grid-processors', SERVANTS.processors);
+  buildGroup('grid-support',    SERVANTS.support);
+}
+
+function buildGroup(gridId, list) {
   const grid = document.getElementById(gridId);
   list.forEach(s => {
-    state.counts[s.id] = 0;
-    const card = document.createElement('div');
-    card.className = 'servant-card';
-    card.id = 'card-' + s.id;
+    S.counts[s.id] = 0;
+    const div = document.createElement('div');
+    div.className = 'servant-card';
+    div.id = 'scard-' + s.id;
+
+    const wageLabel = s.wage >= 10 ? `${s.wage/10} сер./день` : `${s.wage} мед./день`;
+    const maxLabel = s.maxPerBuilding ? `макс. ${s.maxPerBuilding}` : '';
 
     let extra = '';
     if (s.special === 'peasant') {
-      extra = `<div class="peasant-modes" id="pmodes">` +
-        PEASANT_MODES.map(m =>
-          `<div class="pmode-btn ${m.id === state.peasantMode ? 'active' : ''}"
-               onclick="setPeasantMode('${m.id}')">${m.label}</div>`
-        ).join('') +
-        `</div><div class="peasant-note" id="peasant-note">${PEASANT_MODES[0].note}</div>`;
+      extra = `<div class="peasant-modes">${PEASANT_MODES.map(m =>
+        `<div class="pmode-btn ${m.id===S.peasantMode?'active':''}" onclick="setPeasantMode('${m.id}')">${m.label}</div>`
+      ).join('')}</div><div class="peasant-note" id="peasant-note">${PEASANT_MODES[0].note}</div>`;
     }
 
-    card.innerHTML = `
-      <div class="card-header">
+    div.innerHTML = `
+      <div class="card-top">
         <div class="card-name">${s.name}</div>
-        <div class="card-wage" id="wage-${s.id}">${wageStr(s)}</div>
+        <div class="card-wage">${wageLabel}</div>
       </div>
       <div class="card-qty">
-        <div class="qty-btn" onclick="change('${s.id}', -1)">−</div>
+        <div class="qty-btn" onclick="changeCount('${s.id}',-1)">−</div>
         <div class="qty-num" id="qty-${s.id}">0</div>
-        <div class="qty-btn" onclick="change('${s.id}', 1)">+</div>
-        <div class="qty-cap">${s.maxPerBuilding ? `макс. ${s.maxPerBuilding}` : ''}</div>
+        <div class="qty-btn" onclick="changeCount('${s.id}',1)">+</div>
+        <div class="qty-cap">${maxLabel}</div>
       </div>
       ${extra}
-      <div class="card-output" id="out-${s.id}">${s.desc}</div>
-    `;
-    grid.appendChild(card);
+      <div class="card-desc" id="cdesc-${s.id}">${s.desc}</div>`;
+    grid.appendChild(div);
   });
 }
 
-function wageStr(s) {
-  const c = s.wageCopperPerDay;
-  if (c >= 10) return `${c / 10} сер./день`;
-  return `${c} мед./день`;
-}
-
-// =====================
-// UI HANDLERS
-// =====================
-function change(id, delta) {
+function changeCount(id, delta) {
   const s = findServant(id);
   const max = s.maxPerBuilding || 999;
-  state.counts[id] = Math.max(0, Math.min(max, (state.counts[id] || 0) + delta));
-  document.getElementById('qty-' + id).textContent = state.counts[id];
-  const card = document.getElementById('card-' + id);
-  card.classList.toggle('has-servants', state.counts[id] > 0);
-  recalc();
-}
-
-function toggleOvertime() {
-  state.overtime = !state.overtime;
-  const btn = document.getElementById('overtime-btn');
-  btn.classList.toggle('active', state.overtime);
-  recalc();
-}
-
-function setSeason(s) {
-  state.season = s;
-  document.querySelectorAll('.season-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.s === s);
-  });
-  recalc();
-}
-
-function setPeasantMode(mode) {
-  state.peasantMode = mode;
-  document.querySelectorAll('.pmode-btn').forEach(b => {
-    b.classList.toggle('active', b.textContent === PEASANT_MODES.find(m => m.id === mode).label);
-  });
-  const note = PEASANT_MODES.find(m => m.id === mode).note;
-  const el = document.getElementById('peasant-note');
-  if (el) el.textContent = note;
-  recalc();
+  S.counts[id] = Math.max(0, Math.min(max, (S.counts[id]||0) + delta));
+  document.getElementById('qty-' + id).textContent = S.counts[id];
+  document.getElementById('scard-' + id).classList.toggle('active', S.counts[id] > 0);
+  recalcAll();
 }
 
 function findServant(id) {
-  return [
-    ...SERVANTS.extractors,
-    ...SERVANTS.processors,
-    ...SERVANTS.support,
-  ].find(s => s.id === id);
+  return [...SERVANTS.extractors, ...SERVANTS.processors, ...SERVANTS.support].find(s => s.id === id);
 }
 
-// =====================
-// CALCULATION
-// =====================
-function recalc() {
-  const days = state.days;
-  const quartersPerDay = state.overtime ? 3 : 2;
-  const totalQuarters = days * quartersPerDay;
-  const wageMultiplier = state.overtime ? 2 : 1;
+// ═══════════════════════════════════════════
+//  GLOBAL CONTROLS
+// ═══════════════════════════════════════════
+function toggleOvertime() {
+  S.overtime = !S.overtime;
+  const btn = document.getElementById('overtime-btn');
+  btn.classList.toggle('active', S.overtime);
+  recalcAll();
+}
+
+function setSeason(s) {
+  S.season = s;
+  document.querySelectorAll('.season-btn').forEach(b => b.classList.toggle('active', b.dataset.s === s));
+  recalcAll();
+}
+
+function setPeasantMode(mode) {
+  S.peasantMode = mode;
+  document.querySelectorAll('.pmode-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent === PEASANT_MODES.find(m=>m.id===mode).label);
+  });
+  const noteEl = document.getElementById('peasant-note');
+  if (noteEl) noteEl.textContent = PEASANT_MODES.find(m=>m.id===mode).note;
+  recalcAll();
+}
+
+// ═══════════════════════════════════════════
+//  RECALC
+// ═══════════════════════════════════════════
+function recalcAll() {
+  S.days = Math.max(1, parseInt(document.getElementById('days').value) || 1);
+  const qpd = S.overtime ? 3 : 2;
+  const totalQ = S.days * qpd;
+  const wMult = S.overtime ? 2 : 1;
 
   const totals = {};
-  let totalWageCopperPerDay = 0;
-  const seasonNotes = [];
+  let totalWagePerDay = 0;
+  const sNotes = [];
+  const anyActive = Object.values(S.counts).some(v => v > 0);
 
-  // All servants
   const all = [...SERVANTS.extractors, ...SERVANTS.processors, ...SERVANTS.support];
-
   all.forEach(s => {
-    const count = state.counts[s.id] || 0;
+    const count = S.counts[s.id] || 0;
     if (!count) return;
 
-    const wage = s.wageCopperPerDay * count * wageMultiplier;
-    totalWageCopperPerDay += wage;
+    totalWagePerDay += s.wage * count * wMult;
 
     if (s.special === 'peasant') {
-      // Special peasant logic
-      calcPeasant(totals, count, days, seasonNotes);
+      calcPeasant(totals, count, S.days, sNotes);
       return;
     }
-
     if (!s.outputs || !s.outputs.length) return;
 
     s.outputs.forEach(out => {
-      const amount = out.perQuarter * count * totalQuarters;
-      if (out.inputRes) {
-        // Processor: limited by batches (12 per quarter per servant)
-        const capped = Math.min(out.perQuarter, out.maxPerQuarter || out.perQuarter);
-        const produced = capped * count * totalQuarters;
-        totals[out.res] = (totals[out.res] || 0) + produced;
-        // Update card output
-        const outEl = document.getElementById('out-' + s.id);
-        if (outEl) {
-          outEl.innerHTML = `
-            <span>${formatRes(out.res, produced)}</span>
-            <span class="note">(нужно: ${formatInputNote(out.inputRes, out.inputAmt * count * totalQuarters)})</span>`;
-        }
-      } else {
-        totals[out.res] = (totals[out.res] || 0) + amount;
-        const outEl = document.getElementById('out-' + s.id);
-        if (outEl && count > 0) {
-          outEl.innerHTML = `За период: <span>${formatRes(out.res, amount)}${s.outputs.length > 1 ? '' : ''}</span>`;
-          if (s.outputs.length > 1) {
-            // hunter
+      const amount = out.pq * count * totalQ;
+      totals[out.res] = (totals[out.res] || 0) + amount;
+
+      // Update card desc
+      const dEl = document.getElementById('cdesc-' + s.id);
+      if (dEl && count > 0) {
+        if (out.inp) {
+          dEl.innerHTML = `За период: <span>${Math.round(amount)} ${RES[out.res]?.icon} ${RES[out.res]?.lbl}</span><br><span style="color:var(--text-dim);font-size:11px">Нужно: ${Math.round(out.pq * count * totalQ)} ед. ${out.inp}</span>`;
+        } else {
+          const multi = s.outputs.length > 1;
+          if (!multi) {
+            dEl.innerHTML = `За период: <span>${Math.round(amount)} ${RES[out.res]?.icon} ${RES[out.res]?.lbl}</span>`;
+          } else {
             let txt = 'За период: ';
             s.outputs.forEach(o => {
-              const a = o.perQuarter * count * totalQuarters;
-              txt += `<span>${a} ${RES_META[o.res].icon} ${RES_META[o.res].label}</span> `;
+              const a = o.pq * count * totalQ;
+              txt += `<span>${Math.round(a)} ${RES[o.res]?.icon} ${RES[o.res]?.lbl}</span>  `;
+              totals[o.res] = (totals[o.res] || 0); // already added above for each output
             });
-            outEl.innerHTML = txt;
+            dEl.innerHTML = txt;
           }
         }
       }
     });
   });
 
-  renderResults(totals, totalWageCopperPerDay * days, seasonNotes, days);
+  renderResults(totals, totalWagePerDay * S.days, sNotes, anyActive);
+  recalcDefense();
 }
 
-function calcPeasant(totals, count, days, seasonNotes) {
-  const mode = state.peasantMode;
-  const season = state.season;
-  const weeks = days / 7;
+function calcPeasant(totals, count, days, sNotes) {
+  const mode = S.peasantMode;
+  const season = S.season;
 
   if (mode === 'field') {
     if (season === 'autumn') {
-      // 300 per field per season (one week of work)
-      // If days >= 7, they can harvest. Proportional to weeks of work possible.
-      // Rules: one harvest per autumn, takes one week.
-      const harvests = Math.min(count, Math.floor(days / 7));
-      const amount = harvests * 300;
-      totals['grain'] = (totals['grain'] || 0) + amount;
-      if (amount > 0) seasonNotes.push(`Поле (${count} крест.): ${amount} мер зерна (осенний сбор)`);
+      const harvests = Math.floor(days / 7);
+      const amount = harvests * 300 * count;
+      totals['grain'] = (totals['grain']||0) + amount;
+      if (amount) sNotes.push(`Поле (${count} кр.): ${amount} зерна`);
+      else sNotes.push(`Поле: нужна хотя бы неделя для сбора`);
     } else {
-      seasonNotes.push(`Поле: сбор урожая только осенью`);
+      sNotes.push(`Поле: сбор только осенью`);
     }
   } else if (mode === 'garden') {
     if (season === 'spring' || season === 'summer') {
-      const harvests = Math.floor(days / 7);
-      const amount = harvests * 10 * count;
-      totals['veg'] = (totals['veg'] || 0) + amount;
-      if (amount > 0) seasonNotes.push(`Огород (${count} крест.): ${amount} мер овощей`);
-      else seasonNotes.push(`Огород: нужна хотя бы неделя для сбора`);
+      const amount = Math.floor(days / 7) * 10 * count;
+      totals['veg'] = (totals['veg']||0) + amount;
+      if (amount) sNotes.push(`Огород (${count} кр.): ${amount} овощей`);
+      else sNotes.push(`Огород: нужна хотя бы неделя`);
     } else {
-      seasonNotes.push(`Огород: сбор только весной и летом`);
+      sNotes.push(`Огород: только весна/лето`);
     }
   } else if (mode === 'sheep') {
-    // 2x per year: if period covers enough time... simplified:
-    // 1 shearing per 6 months. Approximate per days.
-    const shearings = Math.floor(days / 182);
-    // Each peasant tends 1 flock (up to 12 sheep assumed)
-    // Rules say: 2 мер шерсти с каждого животного. We can't know # of sheep without more input.
-    // Simplify: each peasant produces 2 shearings × 12 sheep potential.
-    // We'll note this as "2 шерсти × 12 овец" and flag it.
-    seasonNotes.push(`Овчарня: стрижка 2 раза в год. Каждый раз: 2 меры шерсти с овцы. Укажи поголовье вручную.`);
+    sNotes.push(`Овчарня: 2 стрижки в год, 2 шерсти/овцу. Поголовье — на усмотрение.`);
   } else if (mode === 'cattle') {
-    // 1 мера еды (молоко) / корову / сутки, четверть суток работы
-    // Each peasant can tend up to 12 cows
-    // Simplified: 1 ед. еды / крестьянин / день (1 корова на крестьянина)
     const amount = count * days;
-    totals['food'] = (totals['food'] || 0) + amount;
-    seasonNotes.push(`Пастбище (${count} крест.): ${amount} мер еды — молоко (по 1 корове на крест.)`);
-  }
-
-  const outEl = document.getElementById('out-peasant');
-  if (outEl) {
-    const m = PEASANT_MODES.find(m => m.id === mode);
-    outEl.innerHTML = `<span>${m.label}</span>: ${m.note}`;
+    totals['food'] = (totals['food']||0) + amount;
+    sNotes.push(`Пастбище (${count} кр.): ${amount} еды (молоко)`);
   }
 }
 
-function formatRes(res, amount) {
-  const m = RES_META[res] || { label: res, icon: '?' };
-  return `${Math.round(amount)} ${m.icon} ${m.label}`;
-}
-
-function formatInputNote(res, amount) {
-  return `${Math.round(amount)} ${res}`;
-}
-
-function renderResults(totals, totalWageCopper, seasonNotes, days) {
-  document.getElementById('results-title').textContent = `Итог за ${days} ${pluralDays(days)}`;
+function renderResults(totals, totalWageCopper, sNotes, anyActive) {
+  const days = S.days;
+  document.getElementById('res-title').textContent = `Итог за ${days} ${plural(days)}`;
 
   const grid = document.getElementById('res-grid');
   grid.innerHTML = '';
 
-  // Show all resource types, even if zero (but only if any servant is active)
-  const anyActive = Object.values(state.counts).some(v => v > 0);
-  const resKeys = Object.keys(RES_META);
-
   if (!anyActive) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);font-style:italic;padding:20px">Добавьте слуг, чтобы увидеть производство</div>`;
   } else {
-    resKeys.forEach(key => {
+    Object.keys(RES).forEach(key => {
       const val = Math.round(totals[key] || 0);
-      const m = RES_META[key];
+      const m = RES[key];
       const item = document.createElement('div');
       item.className = 'res-item' + (val > 0 ? ' nonzero' : '');
-      item.innerHTML = `
-        <div class="res-val ${m.cls}">${val}</div>
-        <div class="res-label">${m.icon} ${m.label}</div>`;
+      item.innerHTML = `<div class="res-val ${m.cls}">${val}</div><div class="res-lbl">${m.icon} ${m.lbl}</div>`;
       grid.appendChild(item);
     });
   }
 
-  // Wages
   const silver = Math.floor(totalWageCopper / 10);
-  const copper = totalWageCopper % 10;
-  let wageHtml = '';
-  if (silver > 0) wageHtml += `<span class="coin-silver">${silver} серебряных</span> `;
-  if (copper > 0 || silver === 0) wageHtml += `<span class="coin-copper">${copper} медных</span>`;
-  document.getElementById('wage-display').innerHTML = wageHtml || '0';
-
-  const mult = state.overtime ? ' (двойная ставка)' : '';
-  document.getElementById('wage-note').textContent =
-    totalWageCopper > 0 ? `За ${days} ${pluralDays(days)}${mult}` : '';
-
-  // Season notes
-  const snEl = document.getElementById('season-note');
-  snEl.innerHTML = seasonNotes.map(n => `<div>${n}</div>`).join('');
+  const copper = Math.round(totalWageCopper % 10);
+  let wHtml = '';
+  if (silver) wHtml += `<span class="coin-s">${silver} серебряных</span> `;
+  if (copper || !silver) wHtml += `<span class="coin-c">${copper} медных</span>`;
+  document.getElementById('wage-out').innerHTML = wHtml || '0';
+  document.getElementById('wage-note').textContent = totalWageCopper > 0
+    ? `За ${days} ${plural(days)}${S.overtime?' (двойная ставка)':''}`
+    : '';
+  document.getElementById('season-notes').innerHTML = sNotes.map(n=>`<div>${n}</div>`).join('');
 }
 
-function pluralDays(n) {
-  if (n % 10 === 1 && n % 100 !== 11) return 'день';
-  if ([2,3,4].includes(n % 10) && ![12,13,14].includes(n % 100)) return 'дня';
+function plural(n) {
+  if (n%10===1 && n%100!==11) return 'день';
+  if ([2,3,4].includes(n%10) && ![12,13,14].includes(n%100)) return 'дня';
   return 'дней';
+}
+
+// ═══════════════════════════════════════════
+//  SAVE / LOAD
+// ═══════════════════════════════════════════
+const LS_KEY = 'fl-citadel-v2';
+
+function collectState() {
+  return {
+    name:        document.getElementById('citadel-name').value,
+    locationType:document.getElementById('location-type').value,
+    flaw:        document.getElementById('flaw').value,
+    description: document.getElementById('description').value,
+    heroes:      S.heroes.slice(),
+    builtIds:    [...S.builtIds],
+    counts:      { ...S.counts },
+    days:        S.days,
+    overtime:    S.overtime,
+    season:      S.season,
+    peasantMode: S.peasantMode,
+  };
+}
+
+function applyState(data) {
+  // Passport fields
+  document.getElementById('citadel-name').value    = data.name        || '';
+  document.getElementById('location-type').value   = data.locationType|| 'any';
+  document.getElementById('flaw').value            = data.flaw        || '';
+  document.getElementById('description').value     = data.description || '';
+  onNameChange();
+
+  // Heroes
+  S.heroes = data.heroes || [];
+  renderHeroes();
+
+  // Buildings
+  S.builtIds = new Set(data.builtIds || []);
+  document.querySelectorAll('.building-card').forEach(c => {
+    const id = c.id.replace('bcard-', '');
+    c.classList.toggle('built', S.builtIds.has(id));
+  });
+  updateBuildTotals();
+
+  // Servants
+  S.counts = data.counts || {};
+  const all = [...SERVANTS.extractors, ...SERVANTS.processors, ...SERVANTS.support];
+  all.forEach(s => {
+    const el = document.getElementById('qty-' + s.id);
+    if (el) el.textContent = S.counts[s.id] || 0;
+    const card = document.getElementById('scard-' + s.id);
+    if (card) card.classList.toggle('active', !!(S.counts[s.id]));
+  });
+  updateServantLocks();
+
+  // Global controls
+  S.days     = data.days     || 7;
+  S.overtime = data.overtime || false;
+  S.season   = data.season   || 'spring';
+  S.peasantMode = data.peasantMode || 'field';
+
+  const daysEl = document.getElementById('days');
+  if (daysEl) daysEl.value = S.days;
+
+  document.getElementById('overtime-btn').classList.toggle('active', S.overtime);
+  document.querySelector('#overtime-btn .dot').style.background = S.overtime ? 'var(--rust-hi)' : '';
+
+  document.querySelectorAll('.season-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.s === S.season));
+
+  document.querySelectorAll('.pmode-btn').forEach(b => {
+    const m = PEASANT_MODES.find(m => m.label === b.textContent);
+    if (m) b.classList.toggle('active', m.id === S.peasantMode);
+  });
+  const pnote = document.getElementById('peasant-note');
+  if (pnote) pnote.textContent = PEASANT_MODES.find(m => m.id === S.peasantMode)?.note || '';
+
+  recalcAll();
+}
+
+function autoSave() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(collectState()));
+    showStatus('Автосохранение ✓');
+  } catch(e) { /* storage full or unavailable */ }
+}
+
+function autoLoad() {
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) { applyState(JSON.parse(raw)); showStatus('Загружено из автосохранения'); }
+  } catch(e) { /* corrupted data */ }
+}
+
+function exportJSON() {
+  const data = collectState();
+  const name = (data.name || 'citadel').replace(/\s+/g, '_').replace(/[^a-zA-Zа-яА-Я0-9_-]/g, '');
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${name || 'citadel'}.json`;
+  a.click();
+  showStatus('Файл сохранён ✓');
+}
+
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      applyState(data);
+      autoSave();
+      showStatus(`Загружено: ${data.name || 'без названия'} ✓`);
+    } catch(err) {
+      showStatus('Ошибка: файл повреждён или неверного формата');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = ''; // allow re-import same file
+}
+
+let _statusTimer;
+function showStatus(msg) {
+  const el = document.getElementById('save-status');
+  if (!el) return;
+  el.textContent = msg;
+  clearTimeout(_statusTimer);
+  _statusTimer = setTimeout(() => { el.textContent = ''; }, 3000);
+}
+
+// Patch recalcAll to autosave after every change
+const _origRecalcAll = recalcAll;
+function recalcAll() {
+  _origRecalcAll();
+  autoSave();
+}
+
+// ═══════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════
+function init() {
+  buildBuildingCards();
+  buildServantCards();
+  // Try to restore saved state; if none, add two blank hero slots
+  const hasSaved = !!localStorage.getItem(LS_KEY);
+  if (hasSaved) {
+    autoLoad();
+  } else {
+    addHero(); addHero();
+    recalcAll();
+  }
 }
 
 window.addEventListener('DOMContentLoaded', init);
